@@ -1,7 +1,8 @@
 import './App.css';
+import WarshipsList from './components/WarshipsList';
 
 function App() {
-  return <div>Warships</div>;
+  return <WarshipsList />;
 }
 
 export default App;
