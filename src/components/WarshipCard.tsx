@@ -21,22 +21,30 @@ const WarshipCard = ({ warship }: WarshipCardProps) => {
     level
   } = warship;
   return (
-    <li className='px-4 py-2 max-w-sm bg-slate-800 relative'>
-      <img src={vehicleIconURL} alt={title} />
-      <header className='flex absolute top-2 w-full'>
+    <li className='px-4 py-2 max-w-xs  h-min  bg-teal-800  relative '>
+      <img src={vehicleIconURL} width='288' height='170' alt={title} />
+      <header className='flex absolute top-2 '>
         <div className='relative'>
-          <img className='opacity-60' src={nationIconURL} alt={nationName} />
+          <img
+            className='opacity-60'
+            height='72'
+            width='117'
+            src={nationIconURL}
+            alt={nationName}
+          />
           <img className='absolute top-0 ' src={typeIconURL} alt={typeTitle} />
           <p className='absolute text-gray-100 top-0 left-7 font-semibold'>
             {convertToRoman(level || 0)}
           </p>
         </div>
-        <h2 className='text-2xl mx-auto text-gray-100 font-semibold'>
+        <h2 className='text-2xl text-center text-gray-100 font-semibold'>
           {title.toUpperCase()}
         </h2>
       </header>
       <details>
-        <summary className='text-gray-100'>Описание коробля</summary>
+        <summary className='text-gray-100 list-none cursor-pointer underline'>
+          Описание коробля
+        </summary>
         <p className='italic text-gray-100'>{description}</p>
       </details>
     </li>
