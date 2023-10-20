@@ -1,53 +1,22 @@
 import { useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { LEVELS, NATIONS, WARSHIP_TYPES } from '../../data/FILTER_DATA';
 import { convertToRoman } from '../utils/convertToRoman.util';
-import { filteredWarshipsAtom, warshipsAtom } from './WarshipsList';
+import { levelFilterAtom, nationFilterAtom, typeFilterAtom } from './WarshipsList';
 const Filters = () => {
-  const [selectedFilters, setSelectedFilters] = useState([]);
-  const [warshipItems] = useAtom(warshipsAtom);
-  const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
+  const [levelFilter, setLevelFilter] = useAtom(levelFilterAtom);
+  const [typeFilter, setTypeFilter] = useAtom(typeFilterAtom);
+  const [nationFilter, setNationFilter] = useAtom(nationFilterAtom);
 
-  const handleFilterChange = (selectedFilter) => {
-    if (!selectedFilters.includes(selectedFilter)) {
-      setSelectedFilters([...selectedFilters, selectedFilter]);
-      return;
-    }
-    if (selectedFilters.includes(selectedFilter)) {
-      const filters = selectedFilters.filter((filter) => filter !== selectedFilter);
-      setSelectedFilters(filters);
-    }
-    console.log('inside handle change filter', selectedFilters);
-  };
-  useEffect(() => {
-    filterWarships();
-  }, [selectedFilters]);
-  const filterWarships = () => {
-    if (!(selectedFilters.length > 0)) setFilteredWarships([...warshipItems]);
-    if (selectedFilters.length > 0) {
-      const tempItems = selectedFilters.map((selectedFilter) => {
-        const temp = warshipItems?.filter((warship) => {
-          const {
-            level,
-            type: { name: typeName },
-            nation: { name: nationName }
-          } = warship;
-          return (
-            level === selectedFilter ||
-            typeName === selectedFilter ||
-            nationName === selectedFilter
-          );
-        });
-        console.log('temp', temp);
+  const handleLevelChange = (e: ChangeEvent<HTMLInputElement>, level: number) =>
+    setLevelFilter(level);
 
-        return temp;
-      });
-      console.log('tempItems', tempItems);
-      console.log('flat', tempItems.flat());
+  const handleTypeChange = (e: ChangeEvent<HTMLInputElement>, type: string) =>
+    setTypeFilter(type);
 
-      setFilteredWarships(tempItems.flat());
-    }
-  };
+  const handleNationChange = (e: ChangeEvent<HTMLInputElement>, nation: string) =>
+    setNationFilter(nation);
+
   return (
     <div className='max-w-xl mx-auto bg-teal-800 text-gray-300 '>
       <h2 className='font-semibold border-b border-teal-900 px-3 py-1'>Фильтры</h2>
@@ -58,9 +27,9 @@ const Filters = () => {
             {LEVELS.map((level) => (
               <li key={level} className='flex items-center gap-x-1'>
                 <input
+                  onChange={(e) => handleLevelChange(e, level)}
                   className='h-7 w-7'
                   type='checkbox'
-                  onChange={() => handleFilterChange(level)}
                   id={convertToRoman(level)}
                 />
                 <label
@@ -78,9 +47,9 @@ const Filters = () => {
             {WARSHIP_TYPES.map((type) => (
               <li key={type.title} className='flex items-center gap-x-1'>
                 <input
+                  onChange={(e) => handleTypeChange(e, type.title)}
                   className='h-7 w-7'
                   type='checkbox'
-                  onChange={() => handleFilterChange(type.title)}
                   id={type.title}
                 />
                 <label htmlFor={type.title} className='font-bolder select-none'>
@@ -101,9 +70,9 @@ const Filters = () => {
             {NATIONS.map((nation) => (
               <li key={nation.title} className='flex items-center gap-x-1'>
                 <input
+                  onChange={(e) => handleNationChange(e, nation.title)}
                   className='h-7 w-7'
                   type='checkbox'
-                  onChange={() => handleFilterChange(nation.title)}
                   id={nation.title}
                 />
                 <label htmlFor={nation.title} className='font-bolder select-none px-1'>

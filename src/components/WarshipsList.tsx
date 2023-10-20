@@ -39,26 +39,34 @@ export enum TYPES_LIST {
   BATTLESHIP = 'battleship',
   AIRCARRIER = 'aircarrier'
 }
-export const filteredWarshipsAtom = atom<Vehicle[] | null>([]);
-export const warshipsAtom = atom<Vehicle[] | null>([]);
+
+export const levelFilterAtom = atom(0);
+export const typeFilterAtom = atom('');
+export const nationFilterAtom = atom('');
 
 const WarshipsList = () => {
-  const [warshipItems, setWarshipsItems] = useAtom(warshipsAtom);
-
-  const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
+  const [levelFilter, setLevelFilter] = useAtom(levelFilterAtom);
+  const [typeFilter, setTypeFilter] = useAtom(typeFilterAtom);
+  const [nationFilter, setNationFilter] = useAtom(nationFilterAtom);
 
   const { loading, error, data: warshipList } = useQuery(GET_WARSHIPS);
-  useEffect(() => {
-    setFilteredWarships(warshipList?.vehicles);
-    setWarshipsItems(warshipList?.vehicles);
-  }, [warshipList]);
-  console.log('inside list', filteredWarships);
 
+  const filteredWarships = warshipList?.vehicles.filter((warship: Vehicle) => {
+    return (
+      (levelFilter === 0 || warship.level === levelFilter) &&
+      (typeFilter === null ||
+        typeFilter === '' ||
+        warship.type?.name?.includes(typeFilter)) &&
+      (nationFilter === null ||
+        nationFilter === '' ||
+        warship.nation?.name?.includes(nationFilter))
+    );
+  });
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>Ошибка : {error.message}</p>;
   return (
     <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>
-      {filteredWarships?.map((warship: Vehicle) => (
+      {filteredWarships.map((warship: Vehicle) => (
         <WarshipCard warship={warship} key={warship.title} />
       ))}
     </ul>
