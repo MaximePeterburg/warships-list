@@ -61,8 +61,13 @@ const WarshipsList = () => {
     setFilteredWarships(warshipList?.vehicles);
   }, [warshipList]);
 
-  if (loading) return <p>Загрузка...</p>;
-  if (error) return <p>Ошибка : {error.message}</p>;
+  if (loading)
+    return (
+      <div className=' h-10 w-full flex justify-center items-center'>
+        <div className=' inline-block w-10 h-10 border-2 border-gray-300 rounded-full border-t-teal-800 animate-spin' />
+      </div>
+    );
+  if (error) return <p className='text-grat-300 font-bold'>Ошибка : {error.message}</p>;
   return (
     <>
       <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>
