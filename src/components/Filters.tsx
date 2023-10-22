@@ -19,13 +19,14 @@ export const activeFiltersAtom = atom<
   { type: 'nation', options: [] }
 ]);
 const Filters = () => {
+
   const [warships, setWarships] = useAtom(warshipsAtom);
   const [activeFilters, setActiveFilters] = useAtom(activeFiltersAtom);
-  const [counter, setCounter] = useAtom(pageCounterAtom);
-
+  const [pageCounter, setPageCounter] = useAtom(pageCounterAtom);
   const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
+
   const reset = () => {
-    setCounter(10);
+    setPageCounter(10);
     setFilteredWarships(warships);
     setActiveFilters([
       { type: 'level', options: [] },
@@ -33,19 +34,25 @@ const Filters = () => {
       { type: 'nation', options: [] }
     ]);
   };
+
   return (
     <form className='flex flex-col gap-0.5  items-center'>
+
       <div className='py-2 px-4 max-w-lg w-full flex bg-teal-800 gap-4'>
+
         <h2 className='font-bold  text-gray-400 '>Фильры</h2>
+
         <p
           onClick={reset}
           className='cursor-pointer font-medium text-gray-300 hover:text-gray-100'>
           Сбросить все
         </p>
+
       </div>
+
       <ul className='flex gap-0.5 max-w-lg w-full'>
-        {FILTERS_DATA.map((section, sectionIdx) => (
-          <Filter key={section.name} section={section} sectionIdx={sectionIdx} />
+        {FILTERS_DATA.map((section) => (
+          <Filter key={section.name} section={section} />
         ))}
       </ul>
     </form>

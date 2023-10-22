@@ -8,80 +8,98 @@ export type Section = {
   name: string;
   title: string;
   options: {
-    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [];
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST;
     label?: string;
     icon?: string;
   }[];
 };
 
 type FilterProps = {
-  sectionIdx: number;
   section: Section;
 };
 
-const Filter = ({ sectionIdx, section }: FilterProps) => {
+const Filter = ({ section }: FilterProps) => {
   const [activeFilters, setActiveFilters] = useAtom(activeFiltersAtom);
-
   const [warships, setWarships] = useAtom(warshipsAtom);
-
   const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
 
+  // Select relevant to the section filter options
   const activeFilterOptions = activeFilters.find(
     (activeFilter) => activeFilter.type === section.name
   )?.options;
 
-  const onUpdateFilter = () => {
+  const handleUpdate = () => {
+    //filter all warships list by active filters
     const updatedFilteredWarships = warships
       .filter((warship: Vehicle) => {
+        // select active levels filter options
         const options = activeFilters.find(
           (activeFilter) => activeFilter.type === 'level'
         )?.options;
 
+        // if none of the level options selected, return each warship of the list
         if (!options?.length) return true;
+
+        // if selected options are selected, and the warship has level that is selected, then add warship to the updated list
         return options.includes(warship.level);
       })
       .filter((warship: Vehicle) => {
+        // select active warship type filter options
         const options = activeFilters.find(
           (activeFilter) => activeFilter.type === 'type'
         )?.options;
 
+        // if none of the warship type options selected, return each warship of the list
         if (!options?.length) return true;
+
+        // if selected options are selected, and the warship has type that is selected, then add warship to the updated list
         return options.includes(warship.type?.name);
       })
       .filter((warship: Vehicle) => {
+        // select active nations filter options
         const options = activeFilters.find(
           (activeFilter) => activeFilter.type === 'nation'
         )?.options;
 
+        // if none of the warship nation options selected, return each warship of the list
         if (!options?.length) return true;
+
+        // if selected options are selected, and the warship has nation that is selected, then add warship to the updated list
         return options.includes(warship.nation?.name);
       });
+    // set state with newely updated warships
     setFilteredWarships(updatedFilteredWarships);
   };
 
-  const isExisting = (value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []) => {
-    return activeFilterOptions?.includes(value);
-  };
+  const isExistingActiveFilterOption = (
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []
+  ) => activeFilterOptions?.includes(value);
 
   const updateFilter = (type: string) => {
     const updatedFilters = activeFilters.map((activeFilter) => {
+      console.log(activeFilters);
+
       if (activeFilter.type == type) {
         activeFilter.options = activeFilterOptions;
       }
       return activeFilter;
     });
+
     setActiveFilters(updatedFilters);
   };
-  const addOption = (
-    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [],
+
+  // add filter to active filters list
+  const addActiveFilterOption = (
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST,
     type: string
   ) => {
     activeFilterOptions?.push(value);
     updateFilter(type);
   };
 
-  const removeOption = (
-    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [],
+  // remove filter from active filters list
+  const removeActiveFilterOption = (
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST,
     type: string
   ) => {
     const index = activeFilterOptions?.indexOf(value);
@@ -89,22 +107,25 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
     updateFilter(type);
   };
 
-  const onChangeFilter = (
+  const handleChange = (
     type: string,
     value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []
   ) => {
-    if (isExisting(value)) {
-      removeOption(value, type);
-    } else {
-      addOption(value, type);
+    if (!isExistingActiveFilterOption(value)) {
+      addActiveFilterOption(value, type);
+      return;
     }
-    onUpdateFilter();
+    if (isExistingActiveFilterOption(value)) {
+      removeActiveFilterOption(value, type);
+    }
+    handleUpdate();
   };
 
   return (
     <li className='px-1 pb-1 w-full flex justify-center bg-teal-800 text-gray-300'>
       <fieldset>
         <legend className='font-semibold py-2 text-center'>{section.title}</legend>
+
         <ul className={`grid ${section.options.length > 5 && 'grid-cols-2'}`}>
           {section.options.map((option, optionIdx) => (
             <li
@@ -115,9 +136,10 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
                 name={`${section.name}[]`}
                 type='checkbox'
                 className='h-7 w-7 accent-teal-950'
-                onChange={() => onChangeFilter(section.name, option.value)}
-                checked={isExisting(option.value)}
+                onChange={() => handleChange(section.name, option.value)}
+                checked={isExistingActiveFilterOption(option.value)}
               />
+
               <label
                 htmlFor={`${section.name}-${optionIdx}`}
                 className='font-bolder select-none text-lg'>
@@ -129,7 +151,7 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
                     height='28'
                   />
                 ) : (
-                  option.label
+                  <p>{option.label}</p>
                 )}
               </label>
             </li>
