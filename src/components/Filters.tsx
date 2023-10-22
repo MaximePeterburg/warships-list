@@ -1,9 +1,19 @@
 import { atom, useAtom } from 'jotai';
-import { FILTERS_DATA } from '../../data/FILTERS_DATA';
+import {
+  FILTERS_DATA,
+  LEVELS_LIST,
+  NATIONS_LIST,
+  TYPES_LIST
+} from '../../data/FILTERS_DATA';
 import Filter from './Filter';
 import { filteredWarshipsAtom, pageCounterAtom, warshipsAtom } from './WarshipsList';
 
-export const activeFiltersAtom = atom([
+export const activeFiltersAtom = atom<
+  {
+    type: string;
+    options: TYPES_LIST[] | NATIONS_LIST[] | LEVELS_LIST[] | [];
+  }[]
+>([
   { type: 'level', options: [] },
   { type: 'type', options: [] },
   { type: 'nation', options: [] }

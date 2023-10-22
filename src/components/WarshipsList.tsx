@@ -1,48 +1,14 @@
 import { useQuery } from '@apollo/client';
 import { atom, useAtom } from 'jotai';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Vehicle } from '../__generated__/graphql';
 import { GET_WARSHIPS } from '../queries/queries';
 import WarshipCard from './WarshipCard';
 
-export enum LEVELS_LIST {
-  I = 1,
-  II = 2,
-  III = 3,
-  IV = 4,
-  V = 5,
-  VI = 6,
-  VII = 7,
-  VIII = 8,
-  IX = 9,
-  X = 10,
-  XI = 11
-}
-export enum NATIONS_LIST {
-  JAPAN = 'japan',
-  USA = 'usa',
-  USSR = 'ussr',
-  GERMANY = 'germany',
-  UK = 'uk',
-  FRANCE = 'france',
-  PAN_ASIA = 'pan_asia',
-  ITALY = 'italy',
-  COMMONWEALTH = 'commonwealth',
-  PAN_AMERICA = 'pan_america',
-  EUROPE = 'europe',
-  NETHERLANDS = 'netherlands',
-  SPAIN = 'spain'
-}
-export enum TYPES_LIST {
-  SUBMARINE = 'submarine',
-  DESTROYER = 'destroyer',
-  CRUISER = 'cruiser',
-  BATTLESHIP = 'battleship',
-  AIRCARRIER = 'aircarrier'
-}
 export const warshipsAtom = atom<Vehicle[]>([]);
 export const filteredWarshipsAtom = atom<Vehicle[]>([]);
 export const pageCounterAtom = atom(10);
+
 const WarshipsList = () => {
   const { loading, error, data: warshipList } = useQuery(GET_WARSHIPS);
 
@@ -64,10 +30,11 @@ const WarshipsList = () => {
   if (loading)
     return (
       <div className=' h-10 w-full flex justify-center items-center'>
-        <div className=' inline-block w-10 h-10 border-2 border-gray-300 rounded-full border-t-teal-800 animate-spin' />
+        <div className='inline-block w-10 h-10 border-2 border-gray-300 rounded-full border-t-teal-800 animate-spin' />
       </div>
     );
-  if (error) return <p className='text-grat-300 font-bold'>Ошибка : {error.message}</p>;
+  if (error)
+    return <p className='mx-auto text-gray-300 font-bold'>Ошибка : {error.message}</p>;
   return (
     <>
       <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>

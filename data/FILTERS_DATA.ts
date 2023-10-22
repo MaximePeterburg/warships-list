@@ -16,8 +16,43 @@ import battleship from '../src/assets/typeIcons/battleship.png';
 import cruiser from '../src/assets/typeIcons/cruiser.png';
 import destroyer from '../src/assets/typeIcons/destroyer.png';
 import submarine from '../src/assets/typeIcons/submarine.png';
-import { LEVELS_LIST, NATIONS_LIST, TYPES_LIST } from '../src/components/WarshipsList';
 import { convertToRoman } from '../src/utils/convertToRoman.util';
+
+export enum LEVELS_LIST {
+  I = 1,
+  II = 2,
+  III = 3,
+  IV = 4,
+  V = 5,
+  VI = 6,
+  VII = 7,
+  VIII = 8,
+  IX = 9,
+  X = 10,
+  XI = 11
+}
+export enum NATIONS_LIST {
+  JAPAN = 'japan',
+  USA = 'usa',
+  USSR = 'ussr',
+  GERMANY = 'germany',
+  UK = 'uk',
+  FRANCE = 'france',
+  PAN_ASIA = 'pan_asia',
+  ITALY = 'italy',
+  COMMONWEALTH = 'commonwealth',
+  PAN_AMERICA = 'pan_america',
+  EUROPE = 'europe',
+  NETHERLANDS = 'netherlands',
+  SPAIN = 'spain'
+}
+export enum TYPES_LIST {
+  SUBMARINE = 'submarine',
+  DESTROYER = 'destroyer',
+  CRUISER = 'cruiser',
+  BATTLESHIP = 'battleship',
+  AIRCARRIER = 'aircarrier'
+}
 
 export const FILTERS_DATA = [
   {
