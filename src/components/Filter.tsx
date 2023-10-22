@@ -1,19 +1,14 @@
 import { useAtom } from 'jotai';
+import { LEVELS_LIST, NATIONS_LIST, TYPES_LIST } from '../../data/FILTERS_DATA';
 import { Vehicle } from '../__generated__/graphql';
 import { activeFiltersAtom } from '../components/Filters';
-import {
-  LEVELS_LIST,
-  NATIONS_LIST,
-  TYPES_LIST,
-  filteredWarshipsAtom,
-  warshipsAtom
-} from './WarshipsList';
+import { filteredWarshipsAtom, warshipsAtom } from './WarshipsList';
 
 export type Section = {
   name: string;
   title: string;
   options: {
-    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST;
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [];
     label?: string;
     icon?: string;
   }[];
@@ -64,10 +59,10 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
     setFilteredWarships(updatedFilteredWarships);
   };
 
-  const isExisting = (value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST) => {
+  const isExisting = (value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []) => {
     return activeFilterOptions?.includes(value);
   };
-  
+
   const updateFilter = (type: string) => {
     const updatedFilters = activeFilters.map((activeFilter) => {
       if (activeFilter.type == type) {
@@ -77,12 +72,18 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
     });
     setActiveFilters(updatedFilters);
   };
-  const addOption = (value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST, type: string) => {
+  const addOption = (
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [],
+    type: string
+  ) => {
     activeFilterOptions?.push(value);
     updateFilter(type);
   };
 
-  const removeOption = (value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST, type: string) => {
+  const removeOption = (
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | [],
+    type: string
+  ) => {
     const index = activeFilterOptions?.indexOf(value);
     activeFilterOptions?.splice(index, 1);
     updateFilter(type);
@@ -90,7 +91,7 @@ const Filter = ({ sectionIdx, section }: FilterProps) => {
 
   const onChangeFilter = (
     type: string,
-    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST
+    value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []
   ) => {
     if (isExisting(value)) {
       removeOption(value, type);
