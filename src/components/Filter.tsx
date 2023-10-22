@@ -111,12 +111,10 @@ const Filter = ({ section }: FilterProps) => {
     type: string,
     value: TYPES_LIST | NATIONS_LIST | LEVELS_LIST | []
   ) => {
-    if (!isExistingActiveFilterOption(value)) {
-      addActiveFilterOption(value, type);
-      return;
-    }
     if (isExistingActiveFilterOption(value)) {
       removeActiveFilterOption(value, type);
+    } else {
+      addActiveFilterOption(value, type);
     }
     handleUpdate();
   };
