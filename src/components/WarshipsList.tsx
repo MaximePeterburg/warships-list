@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { atom, useAtom } from 'jotai';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Vehicle } from '../__generated__/graphql';
 import { GET_WARSHIPS } from '../queries/queries';
 import WarshipCard from './WarshipCard';
@@ -15,7 +15,8 @@ export enum LEVELS_LIST {
   VII = 7,
   VIII = 8,
   IX = 9,
-  X = 10
+  X = 10,
+  XI = 11
 }
 export enum NATIONS_LIST {
   JAPAN = 'japan',
@@ -39,37 +40,44 @@ export enum TYPES_LIST {
   BATTLESHIP = 'battleship',
   AIRCARRIER = 'aircarrier'
 }
-
-export const levelFilterAtom = atom(0);
-export const typeFilterAtom = atom('');
-export const nationFilterAtom = atom('');
-
+export const warshipsAtom = atom<Vehicle[]>([]);
+export const filteredWarshipsAtom = atom<Vehicle[]>([]);
+export const pageCounterAtom = atom(10);
 const WarshipsList = () => {
-  const [levelFilter, setLevelFilter] = useAtom(levelFilterAtom);
-  const [typeFilter, setTypeFilter] = useAtom(typeFilterAtom);
-  const [nationFilter, setNationFilter] = useAtom(nationFilterAtom);
-
   const { loading, error, data: warshipList } = useQuery(GET_WARSHIPS);
 
-  const filteredWarships = warshipList?.vehicles.filter((warship: Vehicle) => {
-    return (
-      (levelFilter === 0 || warship.level === levelFilter) &&
-      (typeFilter === null ||
-        typeFilter === '' ||
-        warship.type?.name?.includes(typeFilter)) &&
-      (nationFilter === null ||
-        nationFilter === '' ||
-        warship.nation?.name?.includes(nationFilter))
-    );
-  });
+  const [counter, setCounter] = useAtom(pageCounterAtom);
+
+  const handleClick = () => {
+    setCounter(counter + 10);
+  };
+
+  const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
+
+  const [warships, setWarships] = useAtom(warshipsAtom);
+
+  useEffect(() => {
+    setWarships(warshipList?.vehicles);
+    setFilteredWarships(warshipList?.vehicles);
+  }, [warshipList]);
+
   if (loading) return <p>Загрузка...</p>;
   if (error) return <p>Ошибка : {error.message}</p>;
   return (
-    <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>
-      {filteredWarships.map((warship: Vehicle) => (
-        <WarshipCard warship={warship} key={warship.title} />
-      ))}
-    </ul>
+    <>
+      <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>
+        {filteredWarships?.slice(0, counter).map((warship: Vehicle) => (
+          <WarshipCard warship={warship} key={warship.title} />
+        ))}
+      </ul>
+      {filteredWarships?.length > counter && (
+        <button
+          className='text-gray-300 mx-auto w-fit px-2 py-1  border rounded-md'
+          onClick={handleClick}>
+          Показать еще
+        </button>
+      )}
+    </>
   );
 };
 

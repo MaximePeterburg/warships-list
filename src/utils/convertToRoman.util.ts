@@ -9,7 +9,8 @@ export const convertToRoman = (num: number): string => {
     7: 'VII',
     8: 'VIII',
     9: 'IX',
-    10: 'X'
+    10: 'X',
+    11: 'XI'
   };
 
   return romanNumerals[num] || '';

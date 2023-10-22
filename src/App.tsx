@@ -4,7 +4,7 @@ import WarshipsList from './components/WarshipsList';
 
 function App() {
   return (
-    <main className='flex flex-col gap-4'>
+    <main className='flex flex-col gap-4 pb-4'>
       <Filters />
       <WarshipsList />
     </main>
