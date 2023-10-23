@@ -77,8 +77,6 @@ const Filter = ({ section }: FilterProps) => {
 
   const updateFilter = (type: string) => {
     const updatedFilters = activeFilters.map((activeFilter) => {
-      console.log(activeFilters);
-
       if (activeFilter.type == type) {
         activeFilter.options = activeFilterOptions;
       }
