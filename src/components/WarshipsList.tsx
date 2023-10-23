@@ -1,4 +1,5 @@
 import { useQuery } from '@apollo/client';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 import { atom, useAtom } from 'jotai';
 import { useEffect } from 'react';
 import { Vehicle } from '../__generated__/graphql';
@@ -10,11 +11,12 @@ export const filteredWarshipsAtom = atom<Vehicle[]>([]);
 export const pageCounterAtom = atom(10);
 
 const WarshipsList = () => {
-  const { loading, error, data: warshipList } = useQuery(GET_WARSHIPS);
-
   const [pageCounter, setPageCounter] = useAtom(pageCounterAtom);
   const [filteredWarships, setFilteredWarships] = useAtom(filteredWarshipsAtom);
   const [warships, setWarships] = useAtom(warshipsAtom);
+  const [parentRef] = useAutoAnimate();
+
+  const { loading, error, data: warshipList } = useQuery(GET_WARSHIPS);
 
   useEffect(() => {
     setWarships(warshipList?.vehicles);
@@ -37,7 +39,7 @@ const WarshipsList = () => {
 
   return (
     <>
-      <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20 '>
+      <ul className='grid gap-x-4 gap-y-4 grid-cols-fill-20' ref={parentRef}>
         {filteredWarships?.slice(0, pageCounter).map((warship: Vehicle) => (
           <WarshipCard warship={warship} key={warship.title} />
         ))}
